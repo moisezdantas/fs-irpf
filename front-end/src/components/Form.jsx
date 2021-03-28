@@ -20,8 +20,9 @@ const tailLayout = {
 };
 
 const FormComponent = () => {
-  const [totalSalary, setTotalSalary] = useState();
-  const [dependent, setDependent] = useState();
+  const [form] = Form.useForm();
+  const [totalSalary, setTotalSalary] = useState(0);
+  const [dependents, setDependents] = useState(0);
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState();
@@ -48,12 +49,8 @@ const FormComponent = () => {
   const onFinish = (values) => {
     calculateIRPF({
       totalSalary: parseFloat(totalSalary),
-      dependentsNumber: Number(dependent),
+      dependentsNumber: Number(dependents),
     });
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
   };
 
   const onChange = (event, value) => {
@@ -62,7 +59,13 @@ const FormComponent = () => {
   };
 
   const onChangeInput = (value) => {
-    setDependent(value);
+    setDependents(value);
+  };
+
+  const resetForm = () => {
+    form.resetFields();
+    setError(false);
+    setSuccess(false);
   };
 
   return (
@@ -74,7 +77,7 @@ const FormComponent = () => {
           remember: true,
         }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+        form={form}
       >
         <Form.Item
           label="Salário"
@@ -88,7 +91,6 @@ const FormComponent = () => {
         >
           <IntlNumberInput
             className="ant-input-number-input-wrap"
-            //style={{ width: "150px" }}
             locale="pt-BR"
             prefix="R$ "
             precision={2}
@@ -96,18 +98,32 @@ const FormComponent = () => {
           />
         </Form.Item>
 
-        <Form.Item label="Dependentes" name="dependent">
-          <InputNumber
-            min={1}
-            max={100000}
-            defaultValue={1}
-            onChange={onChangeInput}
-          />
+        <Form.Item
+          label="Dependentes"
+          name="dependent"
+          rules={[
+            {
+              required: true,
+              message: "Informe quantidade de dependentes!",
+            },
+          ]}
+        >
+          <InputNumber min={1} max={100000} onChange={onChangeInput} />
         </Form.Item>
 
         <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit">
             Consultar
+          </Button>
+          <Button
+            style={{
+              margin: "0 8px",
+            }}
+            onClick={() => {
+              resetForm();
+            }}
+          >
+            Limpar
           </Button>
         </Form.Item>
       </Form>
