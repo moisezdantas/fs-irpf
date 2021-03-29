@@ -98,17 +98,8 @@ const FormComponent = () => {
           />
         </Form.Item>
 
-        <Form.Item
-          label="Dependentes"
-          name="dependent"
-          rules={[
-            {
-              required: true,
-              message: "Informe quantidade de dependentes!",
-            },
-          ]}
-        >
-          <InputNumber min={1} max={100000} onChange={onChangeInput} />
+        <Form.Item label="Dependentes" name="dependent">
+          <InputNumber min={0} max={20} onChange={onChangeInput} />
         </Form.Item>
 
         <Form.Item {...tailLayout}>
